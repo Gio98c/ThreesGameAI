@@ -1,4 +1,4 @@
-# Threes-Java
+# Threes-JavaIA
 Design and implementation of the game "Threes" (similar to 2048) in Java, with intelligence.
 Used for this project ASP, EmbASP, ANTLR4.
 
