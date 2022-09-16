@@ -132,11 +132,11 @@ public class Game extends JFrame {
 		
 		titre = new JLabel(new ImageIcon("threes.jpg"));
 		
-		start_v1 = new JButton("Jouer à la version de base");
+		start_v1 = new JButton("Gioca alla versione di base");
 		start_v1.addActionListener(new startBaseEvent());
 		start_v1.setPreferredSize(BUTTON_SIZE);
 
-		start_v2 = new JButton("Jouer à la version avancée");
+		start_v2 = new JButton("Gioca alla versione avanzata");
 		start_v2.addActionListener(new startAdvancedEvent());
 		start_v2.setPreferredSize(BUTTON_SIZE);
 
