@@ -140,11 +140,11 @@ public class Game extends JFrame {
 		start_v2.addActionListener(new startAdvancedEvent());
 		start_v2.setPreferredSize(BUTTON_SIZE);
 
-		goTo_meilleursScores = new JButton("Voir les meilleurs scores");
+		goTo_meilleursScores = new JButton("Vedi i punteggi migliori");
 		goTo_meilleursScores.addActionListener(new toBestScores());
 		goTo_meilleursScores.setPreferredSize(BUTTON_SIZE);
 		
-		exit_menu = new JButton("Quitter");
+		exit_menu = new JButton("Esci");
 		exit_menu.addActionListener(new exitEvent());
 		exit_menu.setPreferredSize(BUTTON_SIZE);
 		
@@ -175,10 +175,10 @@ public class Game extends JFrame {
 		// On initialise les elements
 		end_buttons = new JPanel();
 		
-		replay = new JButton("Rejouer");
+		replay = new JButton("Rigioca");
 		replay.setPreferredSize(BUTTON_SIZE);
 
-		exit_game = new JButton("Quitter");
+		exit_game = new JButton("Esci");
 		exit_game.setPreferredSize(BUTTON_SIZE);
 		
 		end_buttons.add(replay);
@@ -188,7 +188,7 @@ public class Game extends JFrame {
 		String s = won ? "you_win.png" : "you_lose.png";
 		end_label = new JLabel(new ImageIcon(s));
 		
-		score_label = new JLabel("Score : " + String.valueOf(score), SwingConstants.CENTER);
+		score_label = new JLabel("Punteggio : " + String.valueOf(score), SwingConstants.CENTER);
 		score_label.setFont(TITLE_FONT);
 		score_label.setPreferredSize(new Dimension(this.getWidth(),150));
 
@@ -222,7 +222,7 @@ public class Game extends JFrame {
 		bestScores_holder.setPreferredSize(new Dimension(this.getWidth(),130));
 		bestScores_holder.add(bestScores_label);
 		
-		toMenu = new JButton("Retourner au menu");
+		toMenu = new JButton("Ritorna al menù");
 		toMenu.setPreferredSize(BUTTON_SIZE);
 		toMenu.addActionListener(new toMenuEvent());
 		
@@ -318,7 +318,7 @@ public class Game extends JFrame {
 		}
 
 		catch (FileNotFoundException e) {
-			System.out.println("Impossible d'ouvrir le fichier '" + scoreFile + "' car il n'existait pas, le fichier a été créer.");
+			System.out.println("Impossibile aprire il file '" + scoreFile + "' perché non esiste, il file è stato creato.");
 			try {
 				FileWriter fileWriter = new FileWriter(scoreFile);
 				BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
@@ -339,12 +339,12 @@ public class Game extends JFrame {
 			}
 
 			catch (IOException ex) {
-				System.out.println("Erreur a la lecture du fichier '" + scoreFile + "'");
+				System.out.println("Errore durante la lettura del file '" + scoreFile + "'");
 			}
 		}
 
 		catch (IOException ex) {
-			System.out.println("Erreur a la lecture du fichier '" + scoreFile + "'");
+			System.out.println("Errore durante la lettura del file '" + scoreFile + "'");
 		}
 
 		try {
@@ -360,7 +360,7 @@ public class Game extends JFrame {
 		}
 
 		catch (IOException ex) {
-			System.out.println("Erreur a la lecture du fichier '" + scoreFile + "'");
+			System.out.println("Errore durante la lettura del file '" + scoreFile + "'");
 		}
 	}
 
@@ -384,11 +384,11 @@ public class Game extends JFrame {
 		}
 
 		catch (FileNotFoundException e) {
-			System.out.println("Impossible d'ouvrir le fichier '" + scoreFile + "'");
+			System.out.println("Impossibile aprire il file '" + scoreFile + "'");
 		}
 
 		catch (IOException ex) {
-			System.out.println("Erreur a la lecture du fichier '" + scoreFile + "'");
+			System.out.println("Errore durante la lettura del file '" + scoreFile + "'");
 		}
 	}
 
