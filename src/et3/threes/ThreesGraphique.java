@@ -208,7 +208,7 @@ public class ThreesGraphique extends JPanel {
 
 	public boolean tileCanMove(int i, int mouvement) {
 
-		// Si les tuiles sont de même valeur mais ne sont pas 1-1 ou 2-2
+		// Se le tessere hanno lo stesso valore ma non sono 1-1 o 2-2
 		if (tiles[i].getVal() == tiles[i + mouvement].getVal()
 				&& ((tiles[i].getVal() + tiles[i + mouvement].getVal() != 2)
 						&& (tiles[i].getVal() + tiles[i + mouvement].getVal() != 4) && (tiles[i].getVal() != 0)))
