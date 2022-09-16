@@ -12,7 +12,7 @@ public class Moving_Tile_2D extends Tile_2D {
 
 	public Moving_Tile_2D(int x, int y) {
 
-		super(x + ThreesGraphique.XOFFSET, y);
+		super(x + ThreesGraphics.XOFFSET, y);
 		translation_x = 0;
 		translation_y = 0;
 

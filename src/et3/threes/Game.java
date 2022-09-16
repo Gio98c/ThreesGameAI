@@ -420,7 +420,7 @@ public class Game extends JFrame {
 
 		public void actionPerformed(ActionEvent e) {
 
-			ThreesGraphique advanced_game = new ThreesGraphique(Game.this);
+			ThreesGraphics advanced_game = new ThreesGraphics(Game.this);
 			advanced_game.init();
 			advanced_game.randomFirstTiles();
 
