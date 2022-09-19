@@ -1,10 +1,14 @@
 package et3.threes;
 
+import it.unical.mat.embasp.languages.Id;
+import it.unical.mat.embasp.languages.Param;
+
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.geom.RoundRectangle2D;
 
+@Id("tile")
 public class Tile_2D {
 
 	public final static int TILES_SIZE = 100;
@@ -22,8 +26,11 @@ public class Tile_2D {
 	private final static Color OTHER_TILES_FOREGROUNDCOLOR = new Color(0x000000);
 	private final static Color EMPTY_TILES_COLOR = new Color(0x038787);
 
+	@Param(0)
 	private int val;
+	@Param(1)
 	private int x;
+	@Param(2)
 	private int y;
 	protected RoundRectangle2D geom;
 	

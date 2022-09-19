@@ -407,4 +407,8 @@ public class ThreesGraphics extends JPanel {
 		public void mouseEntered(MouseEvent e) {}
 		public void mouseExited(MouseEvent e) {}
 	}
+
+	public Tile_2D[] getArrayTile() {
+		return tiles;
+	}
 }

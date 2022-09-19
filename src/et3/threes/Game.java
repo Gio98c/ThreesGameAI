@@ -1,7 +1,14 @@
 package et3.threes;
 
 import it.unical.mat.embasp.base.Handler;
+import it.unical.mat.embasp.base.InputProgram;
 import it.unical.mat.embasp.base.OptionDescriptor;
+import it.unical.mat.embasp.base.Output;
+import it.unical.mat.embasp.languages.IllegalAnnotationException;
+import it.unical.mat.embasp.languages.ObjectNotValidException;
+import it.unical.mat.embasp.languages.asp.ASPInputProgram;
+import it.unical.mat.embasp.languages.asp.ASPMapper;
+import it.unical.mat.embasp.languages.asp.AnswerSets;
 import it.unical.mat.embasp.platforms.desktop.DesktopHandler;
 import it.unical.mat.embasp.specializations.dlv2.desktop.DLV2DesktopService;
 
@@ -61,6 +68,8 @@ public class Game extends JFrame {
 
 	private Timer timer;
 	private ThisTimerTask timerTask;
+
+	private static Handler handler;
 
 	// Getters et Setters
 
@@ -420,9 +429,63 @@ public class Game extends JFrame {
 
 		public void actionPerformed(ActionEvent e) {
 
+			handler = new DesktopHandler(new DLV2DesktopService("/lib/dlv-2.1.1-win64.exe"));
+
+			OptionDescriptor option = new OptionDescriptor("-n 0");
+			handler.addOption(option);
+
+			try {
+				ASPMapper.getInstance().registerClass(Tile_2D.class);
+			} catch (ObjectNotValidException | IllegalAnnotationException ex) {
+				ex.printStackTrace();
+			}
+
+
 			ThreesGraphics advanced_game = new ThreesGraphics(Game.this);
 			advanced_game.init();
 			advanced_game.randomFirstTiles();
+
+
+			InputProgram fixedProgram = new ASPInputProgram();
+
+			for(Tile_2D i : advanced_game.getArrayTile()) {
+				//if(i.getVal() != 0) {
+					try {
+						fixedProgram.addObjectInput(i);
+					} catch (Exception ex) {
+						ex.printStackTrace();
+					}
+				//}
+			}
+
+			handler.addProgram(fixedProgram);
+
+			InputProgram program = new ASPInputProgram();
+			while(!advanced_game.isFull()) {
+
+				for(Tile_2D i : advanced_game.getArrayTile()) {
+					//if(i.getVal() != 0) {
+					try {
+						program.addObjectInput(i);
+					} catch (Exception ex) {
+						ex.printStackTrace();
+					}
+					//}
+				}
+
+				handler.addProgram(program);
+
+				InputProgram encoding = new ASPInputProgram();
+				encoding.addFilesPath("programDLV");
+				handler.addProgram(encoding);
+				Output o = handler.startSync();
+
+				AnswerSets answerSets = (AnswerSets) o;
+
+				// gestione dell'asnwerset
+
+				program.clearAll();
+			}
 
 			Game.this.setContentPane(advanced_game);
 			Game.this.revalidate();
@@ -477,17 +540,12 @@ public class Game extends JFrame {
 	public static void main(String[] args) {
 
 		//WINDOWS
-		DLV2DesktopService service = new DLV2DesktopService("/lib/dlv-2.1.1-win64.exe");
+		//DLV2DesktopService service = new DLV2DesktopService("/lib/dlv-2.1.1-win64.exe");
 		//LINUX
 		//DLV2DesktopService service = new DLV2DesktopService("/lib/dlv-2.1.1-linux-x86_64");
 
-		Handler handler = new DesktopHandler(service);
-
-		OptionDescriptor option = new OptionDescriptor("-n 0");
-		handler.addOption(option);
-
-		Game jeu = new Game();
-		jeu.init_menu_base();
+		Game game = new Game();
+		game.init_menu_base();
 	}
 
 }
