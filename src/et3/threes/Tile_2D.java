@@ -43,12 +43,22 @@ public class Tile_2D {
 		y = y_pos;
 		geom = new RoundRectangle2D.Double(x, y, TILES_SIZE, TILES_SIZE, TILES_ROUND, TILES_ROUND);
 	}
+
+	public Tile_2D(int val_pos, int x_pos, int y_pos) {
+
+		val = val_pos;
+		x = x_pos;
+		y = y_pos;
+		geom = new RoundRectangle2D.Double(x, y, TILES_SIZE, TILES_SIZE, TILES_ROUND, TILES_ROUND);
+	}
 	
 	// Renvoi la valeur de la tuile appelante
 	
 	public int getVal() {
 		return val;
 	}
+	public int getX() { return x; }
+	public int getY() { return y; }
 	
 	// Donne une valeur a la tuile appelante
 	

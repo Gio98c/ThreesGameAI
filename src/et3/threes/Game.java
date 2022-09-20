@@ -429,7 +429,7 @@ public class Game extends JFrame {
 
 		public void actionPerformed(ActionEvent e) {
 
-			handler = new DesktopHandler(new DLV2DesktopService("/lib/dlv-2.1.1-win64.exe"));
+			handler = new DesktopHandler(new DLV2DesktopService("lib/dlv-2.1.1-win64.exe"));
 
 			OptionDescriptor option = new OptionDescriptor("-n 0");
 			handler.addOption(option);
@@ -451,7 +451,7 @@ public class Game extends JFrame {
 			for(Tile_2D i : advanced_game.getArrayTile()) {
 				//if(i.getVal() != 0) {
 					try {
-						fixedProgram.addObjectInput(i);
+						fixedProgram.addObjectInput(new Tile_2D(i.getVal(), i.getX(), i.getY()));
 					} catch (Exception ex) {
 						ex.printStackTrace();
 					}
@@ -466,7 +466,7 @@ public class Game extends JFrame {
 				for(Tile_2D i : advanced_game.getArrayTile()) {
 					//if(i.getVal() != 0) {
 					try {
-						program.addObjectInput(i);
+						fixedProgram.addObjectInput(new Tile_2D(i.getVal(), i.getX(), i.getY()));
 					} catch (Exception ex) {
 						ex.printStackTrace();
 					}
@@ -476,7 +476,8 @@ public class Game extends JFrame {
 				handler.addProgram(program);
 
 				InputProgram encoding = new ASPInputProgram();
-				encoding.addFilesPath("programDLV");
+				// Questo va messo fuori dal ciclo
+				encoding.addFilesPath("src/et3/encoding/programDLV");
 				handler.addProgram(encoding);
 				Output o = handler.startSync();
 
