@@ -206,7 +206,7 @@ public class ThreesGraphics extends JPanel {
 		tiles[i + mouvement].setVal(tiles[i + mouvement].getVal() + tiles[i].getVal());
 		tiles[i].setVal(0);
 	}
-	private void moveEntireBoard(int mouvement) {
+	public void moveEntireBoard(int mouvement) {
 		boolean mouvementMade = false;
 
 		switch (mouvement) {
@@ -410,5 +410,9 @@ public class ThreesGraphics extends JPanel {
 
 	public Tile_2D[] getArrayTile() {
 		return tiles;
+	}
+
+	public Tile_2D tileAt(int x, int y) {
+		return tiles[x + y * 4];
 	}
 }

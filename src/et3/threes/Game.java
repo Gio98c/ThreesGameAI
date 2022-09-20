@@ -8,6 +8,7 @@ import it.unical.mat.embasp.languages.IllegalAnnotationException;
 import it.unical.mat.embasp.languages.ObjectNotValidException;
 import it.unical.mat.embasp.languages.asp.ASPInputProgram;
 import it.unical.mat.embasp.languages.asp.ASPMapper;
+import it.unical.mat.embasp.languages.asp.AnswerSet;
 import it.unical.mat.embasp.languages.asp.AnswerSets;
 import it.unical.mat.embasp.platforms.desktop.DesktopHandler;
 import it.unical.mat.embasp.specializations.dlv2.desktop.DLV2DesktopService;
@@ -16,6 +17,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -431,7 +433,7 @@ public class Game extends JFrame {
 
 			handler = new DesktopHandler(new DLV2DesktopService("lib/dlv-2.1.1-win64.exe"));
 
-			OptionDescriptor option = new OptionDescriptor("-n 0");
+			OptionDescriptor option = new OptionDescriptor("-n 0 --filter scelta/1");
 			handler.addOption(option);
 
 			try {
@@ -446,9 +448,9 @@ public class Game extends JFrame {
 			advanced_game.randomFirstTiles();
 
 
-			InputProgram fixedProgram = new ASPInputProgram();
+			InputProgram facts = new ASPInputProgram();
 
-			for(Tile_2D i : advanced_game.getArrayTile()) {
+			/*for(Tile_2D i : advanced_game.getArrayTile()) {
 				//if(i.getVal() != 0) {
 					try {
 						fixedProgram.addObjectInput(new Tile_2D(i.getVal(), i.getX(), i.getY()));
@@ -456,40 +458,77 @@ public class Game extends JFrame {
 						ex.printStackTrace();
 					}
 				//}
+			}*/
+			String id = "id";
+			int cont = 0;
+
+			for(int i=0; i<4; i++) {
+				for(int j=0; j<4; j++) {
+					try {
+						facts.addObjectInput(new MatriceIA(id+String.valueOf(cont++), i, j, advanced_game.tileAt(i, j).getVal()));
+					} catch (Exception ex) {
+						throw new RuntimeException(ex);
+					}
+				}
 			}
 
-			handler.addProgram(fixedProgram);
+			handler.addProgram(facts);
+
+			try {
+				ASPMapper.getInstance().registerClass(Scelta.class);
+			} catch (ObjectNotValidException | IllegalAnnotationException ex) {
+				throw new RuntimeException(ex);
+			}
+
 
 			InputProgram program = new ASPInputProgram();
-			while(!advanced_game.isFull()) {
+			program.addFilesPath("src/et3/encoding/programDLV");
+			handler.addProgram(program);
 
-				for(Tile_2D i : advanced_game.getArrayTile()) {
-					//if(i.getVal() != 0) {
-					try {
-						fixedProgram.addObjectInput(new Tile_2D(i.getVal(), i.getX(), i.getY()));
-					} catch (Exception ex) {
-						ex.printStackTrace();
+			Output o = handler.startSync();
+			AnswerSets answerSets = (AnswerSets) o;
+
+			String scelta = "";
+			for(AnswerSet a : answerSets.getAnswersets()) {
+				try {
+					for(Object obj : a.getAtoms()) {
+						if(obj instanceof Scelta) {
+							Scelta s = (Scelta) obj;
+							scelta = s.getScelta();
+							System.out.println(s);
+						}
 					}
-					//}
+				} catch (Exception ex) {
+					ex.printStackTrace();
 				}
+			}
 
-				handler.addProgram(program);
-
-				InputProgram encoding = new ASPInputProgram();
-				// Questo va messo fuori dal ciclo
-				encoding.addFilesPath("src/et3/encoding/programDLV");
-				handler.addProgram(encoding);
-				Output o = handler.startSync();
-
-				AnswerSets answerSets = (AnswerSets) o;
-
-				// gestione dell'asnwerset
-
-				program.clearAll();
+			switch (scelta) {
+				case "destra":
+					// RIGHT
+					advanced_game.moveEntireBoard(1);
+					break;
+				case "sinistra":
+					// LEFT
+					advanced_game.moveEntireBoard(-1);
+					break;
+				case "giu":
+					// DOWN
+					advanced_game.moveEntireBoard(4);
+					break;
+				case "su":
+					// UP
+					advanced_game.moveEntireBoard(-4);
+					break;
+				default:
+					setLostStatut(true);
+					return;
 			}
 
 			Game.this.setContentPane(advanced_game);
 			Game.this.revalidate();
+
+			advanced_game.repaint();
 			
 			// Fixe la frequence de rafraichissement de la fenetre a 60Hz
 			

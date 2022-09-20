@@ -1,0 +1,69 @@
+
+%inMatrice(id1,0,0,4).   inMatrice(id2,0,1,2).  inMatrice(id3,0,2,4). inMatrice(id4,0,3,8).
+%inMatrice(id5,1,0,2).   inMatrice(id6,1,1,4).  inMatrice(id7,1,2,8). inMatrice(id8,1,3,2).
+%inMatrice(id9,2,0,4).   inMatrice(id10,2,1,16).  inMatrice(id11,2,2,2). inMatrice(id12,2,3,16).
+%inMatrice(id13,3,0,16).   inMatrice(id14,3,1,8).  inMatrice(id15,3,2,8). inMatrice(id16,3,3,128).
+
+%controllo se è nella matrice un numero tra id1 e id2
+elementoInMezzo(riga,I1,I2) :- inMatrice(I,X,Y,V), inMatrice(I1,X,Y1,V1), inMatrice(I2,X,Y2,V2), Y > Y1, Y < Y2, V > 0, V2 > 0, V1 > 0.
+elementoInMezzo(colonna,I1,I2) :- inMatrice(I,X,Y,V), inMatrice(I1,X1,Y,V1), inMatrice(I2,X2,Y,V2), X > X1, X < X2, V > 0, V1 > 0, V2 > 0.
+
+%controllo riga	e colonna
+merge(sinistra,I1,I2) :- inMatrice(I1,X,Y1,V1), inMatrice(I2,X,Y2,V2), Y2 > Y1, V1 = V2, V1 > 0, not elementoInMezzo(riga,I1,I2).
+merge(destra,I1,I2) :- inMatrice(I1,X,Y1,V1), inMatrice(I2,X,Y2,V2), Y2 > Y1, V1 = V2, V1 > 0, not elementoInMezzo(riga,I1,I2).
+merge(giu,I1,I2):- inMatrice(I1,X1,Y,V1), inMatrice(I2,X2,Y,V2), X2 > X1, V1 = V2, V1 > 0, not elementoInMezzo(colonna,I1,I2).
+merge(su,I1,I2) :- inMatrice(I1,X1,Y,V1), inMatrice(I2,X2,Y,V2), X2 > X1, V1 = V2, V1 > 0, not elementoInMezzo(colonna,I1,I2).
+
+countMerge(Z,C) :- #count{Z,X,Y:merge(Z,X,Y)} = C, merge(Z,_,_).
+
+maxCount(X) :- #max{P : countMerge(_,P)} = X, countMerge(_,_).
+
+possibile(X) :- merge(X,_,_).
+
+spazioRigaDopoY(X,Y) :- inMatrice(_,X,Y,V), inMatrice(_,X,Y1,0), Y1 > Y,  V > 0.
+possibile(destra):- inMatrice(_,X,Y,_), spazioRigaDopoY(X,Y).
+
+spazioRigaPrimaY(X,Y) :- inMatrice(_,X,Y,V), inMatrice(_,X,Y1,0), Y1 < Y, V > 0.
+possibile(sinistra):- inMatrice(_,X,Y,_), spazioRigaPrimaY(X,Y).
+
+spazioColonnaDopoX(X,Y) :- inMatrice(_,X,Y,V), inMatrice(_,X1,Y,0), X1 > X, V > 0.
+possibile(giu) :- inMatrice(_,X,Y,_), spazioColonnaDopoX(X,Y).
+
+spazioColonnaPrimaX(X,Y) :- inMatrice(_,X,Y,V), inMatrice(_,X1,Y,0), X1 < X, V > 0.
+possibile(su) :- inMatrice(_,X,Y,V), spazioColonnaPrimaX(X,Y).
+
+%--------------------------------------------------
+
+scelta(X) | notScelta(X) :- possibile(X).
+:- scelta(X), scelta(Y), X != Y.
+
+:~ #count{X : scelta(X)} = 0. [1@3]
+
+coppia(sinistra,destra).
+coppia(X,Y) :- coppia(Y,X).
+coppia(su,giu).
+
+%scelta(X) :- possibile(X), countMerge(X,C), countMax(C).
+
+
+:~ scelta(su), possibile(giu), merge(giu,I1,I2), inMatrice(I1,_,Y,V), inMatrice(I2,_,Y,V), Y > 1. [V@1]
+:~ scelta(giu), possibile(destra), merge(destra,ID1,ID2), inMatrice(ID1,X,2,V), inMatrice(ID2,X,3,V). [V@1]
+:~ notScelta(giu), possibile(giu), merge(giu,ID1,ID2), inMatrice(ID1,X,3,V), inMatrice(ID2,X,3,V). [V@1]
+:~ scelta(su), possibile(X), X != sinistra, X != su. [1@1]
+
+:~ notScelta(su), possibile(su), not possibile(destra), ultimaColonnaFissa, inMatrice(_,X1,2,V), inMatrice(_,X2,3,V), X2 = X1 - 1, V != 0. [V@1]
+:~ notScelta(su), possibile(su), not possibile(destra), ultimaColonnaFissa, inMatrice(_,X1,2,V), inMatrice(_,X2,2,V), X2 = X1 - 1, inMatrice(_,X2,3,V1), V1 = V * 2. [V1@1]
+
+
+:~ notScelta(X), possibile(X), countMerge(X,C), countMerge(Y,C), not coppia(X,Y), countMax(C) . [2@1]
+
+:~ notScelta(destra), possibile(destra), inMatrice(_,X,3,0), X != 3. [1@2]
+:~ notScelta(giu), possibile(giu), inMatrice(_,3,3,0), inMatrice(_,_,3,V 	), V > 0. [V@2]
+
+:~ scelta(sinistra). [3@3]
+
+
+vuotoUltimaColonna :- inMatrice(_,_,3,0).
+mergeUltimaColonna :- inMatrice(ID1,_,3,_), inMatrice(ID2,_,3,_), merge(Z,ID1,ID2), Z != sinistra, Z != destra.
+ultimaColonnaFissa :- not vuotoUltimaColonna, not mergeUltimaColonna.
+
